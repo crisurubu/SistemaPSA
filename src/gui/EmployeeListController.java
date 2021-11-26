@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -29,46 +30,57 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.entities.Occupation;
+import model.entities.Employee;
+import model.services.EmployeeService;
 import model.services.OccupationService;
 
-public class OccupationListController implements Initializable, DataChangeListener {
+public class EmployeeListController implements Initializable, DataChangeListener{
 
-	private OccupationService service;
-
-	@FXML
-	private TableView<Occupation> tableViewOccupation;
-
-	@FXML
-	private TableColumn<Occupation, Integer> tableColumnId;
-
-	@FXML
-	private TableColumn<Occupation, String> tableColumnName;
+	private EmployeeService service;
 	
 	@FXML
-	private TableColumn<Occupation, Double> tableColumnBaseSalary;
+	private TableView<Employee> tableViewEmployee;
+	
+	@FXML
+	private TableColumn<Employee, Integer> tableColumnId;
+	
+	@FXML
+	private TableColumn<Employee, String> tableColumnName;
 
 	@FXML
-	private TableColumn<Occupation, Occupation> tableColumnEDIT;
+	private TableColumn<Employee, String> tableColumnEmail;
 
 	@FXML
-	private TableColumn<Occupation, Occupation> tableColumnREMOVE;
+	private TableColumn<Employee, String> tableColumnCelular;
+
+	@FXML
+	private TableColumn<Employee, Date> tableColumnAdmissionDate;
+
+	@FXML
+	private TableColumn<Employee, String> tableColumnDepartment;
+	
+	@FXML
+	private TableColumn<Employee, Employee> tableColumnEDIT;
+
+	@FXML
+	private TableColumn<Employee, Employee> tableColumnREMOVE;
 
 	@FXML
 	private Button btNew;
 
-	private ObservableList<Occupation> obsList;
+	private ObservableList<Employee> obsList;
 
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
-
 		Stage parentStage = gui.util.Utils.currentStage(event);
-		Occupation obj = new Occupation();
-
-		createDialogForm(obj, "/gui/OccupationForm.fxml", parentStage);
+		Employee obj = new Employee();
+		
+		createDialogForm(obj, "/gui/EmployeeForm.fxml", parentStage);
+	
 	}
-
-	public void setOccupationService(OccupationService service) {
+	
+	
+	public void setEmployeeService(EmployeeService service) {
 		this.service = service;
 	}
 
@@ -81,11 +93,14 @@ public class OccupationListController implements Initializable, DataChangeListen
 	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
-		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2);
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		tableColumnCelular.setCellValueFactory(new PropertyValueFactory<>("celular"));
+		tableColumnAdmissionDate.setCellValueFactory(new PropertyValueFactory<>("admissionDate"));
+		Utils.formatTableColumnDate(tableColumnAdmissionDate, "dd/MM/yyyy");
+		tableColumnDepartment.setCellValueFactory(new PropertyValueFactory<>("department"));
 		
 		Stage stage = (Stage) Main.getMainScene().getWindow();
-		tableViewOccupation.prefHeightProperty().bind(stage.heightProperty());
+		tableViewEmployee.prefHeightProperty().bind(stage.heightProperty());
 
 	}
 
@@ -93,27 +108,29 @@ public class OccupationListController implements Initializable, DataChangeListen
 		if (service == null) {
 			throw new IllegalStateException("Service was null");
 		}
-		List<Occupation> list = service.findAll();
+		List<Employee> list = service.findAll();
 		obsList = FXCollections.observableArrayList(list);
-		tableViewOccupation.setItems(obsList);
+		tableViewEmployee.setItems(obsList);
 		initEditButtons();
 		initRemoveButtons();
 
 	}
 
-	private void createDialogForm(Occupation obj, String absoluteName, Stage parentStege) {
+	private void createDialogForm(Employee obj, String absoluteName, Stage parentStege) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
 
-			OccupationFormController controller = loader.getController();
-			controller.setOccupation(obj);
-			controller.setOccupationService(new OccupationService());
+			EmployeeFormController controller = loader.getController();
+			controller.setEmployee(obj);
+			controller.setServices(new EmployeeService(), new OccupationService());
+			controller.loadAssociateObjects();
+			
 			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
 
 			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Enter Occupation data:");
+			dialogStage.setTitle("Enter Employee data:");
 			dialogStage.setScene(new Scene(pane));
 			dialogStage.setResizable(false);
 			dialogStage.initOwner(parentStege);
@@ -134,11 +151,11 @@ public class OccupationListController implements Initializable, DataChangeListen
 
 	private void initEditButtons() {
 		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnEDIT.setCellFactory(param -> new TableCell<Occupation, Occupation>() {
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Employee, Employee>() {
 			private final Button button = new Button("edit");
 
 			@Override
-			protected void updateItem(Occupation obj, boolean empty) {
+			protected void updateItem(Employee obj, boolean empty) {
 				super.updateItem(obj, empty);
 				if (obj == null) {
 					setGraphic(null);
@@ -146,18 +163,18 @@ public class OccupationListController implements Initializable, DataChangeListen
 				}
 				setGraphic(button);
 				button.setOnAction(
-						event -> createDialogForm(obj, "/gui/OccupationForm.fxml", Utils.currentStage(event)));
+						event -> createDialogForm(obj, "/gui/EmployeeForm.fxml", Utils.currentStage(event)));
 			}
 		});
 	}
 
 	private void initRemoveButtons() {
 		tableColumnREMOVE.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-		tableColumnREMOVE.setCellFactory(param -> new TableCell<Occupation, Occupation>() {
+		tableColumnREMOVE.setCellFactory(param -> new TableCell<Employee, Employee>() {
 			private final Button button = new Button("remove");
 
 			@Override
-			protected void updateItem(Occupation obj, boolean empty) {
+			protected void updateItem(Employee obj, boolean empty) {
 				super.updateItem(obj, empty);
 				if (obj == null) {
 					setGraphic(null);
@@ -169,7 +186,7 @@ public class OccupationListController implements Initializable, DataChangeListen
 		});
 	}
 
-	private void  removeEntity(Occupation obj) {
+	private void  removeEntity(Employee obj) {
 		Optional<ButtonType> result =  Alerts.showConfirmation("Confirmation", "Are you sure to delete? ");
 		
 		if(result.get() == ButtonType.OK) {

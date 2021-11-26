@@ -110,7 +110,7 @@ public class OccupationFormController implements Initializable{
 		
 
 		if(txtSalary.getText() == null || txtSalary.getText().trim().equals("")) {
-			exception.addError("baseSalary", "Fields can 't empty");
+			exception.addError("baseSalary", "Fields can't empty");
 		}
 		obj.setBaseSalary(Utils.tryParseToDouble(txtSalary.getText()));
 		
@@ -164,7 +164,7 @@ public class OccupationFormController implements Initializable{
 		}
 		
 		if(fields.contains("baseSalary")) {
-			labelErrorName.setText(errors.get("baseSalary"));
+			labelErrorSalary.setText(errors.get("baseSalary"));
 			
 		}
 	}
