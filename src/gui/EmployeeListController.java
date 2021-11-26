@@ -96,8 +96,9 @@ public class EmployeeListController implements Initializable, DataChangeListener
 		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 		tableColumnCelular.setCellValueFactory(new PropertyValueFactory<>("celular"));
 		tableColumnAdmissionDate.setCellValueFactory(new PropertyValueFactory<>("admissionDate"));
-		Utils.formatTableColumnDate(tableColumnAdmissionDate, "dd/MM/yyyy");
 		tableColumnDepartment.setCellValueFactory(new PropertyValueFactory<>("department"));
+		Utils.formatTableColumnDate(tableColumnAdmissionDate, "dd/MM/yyyy");
+		
 		
 		Stage stage = (Stage) Main.getMainScene().getWindow();
 		tableViewEmployee.prefHeightProperty().bind(stage.heightProperty());

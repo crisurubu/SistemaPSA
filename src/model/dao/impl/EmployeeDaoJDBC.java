@@ -1,7 +1,6 @@
 package model.dao.impl;
 
 import java.sql.Connection;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +14,8 @@ import com.mysql.jdbc.Statement;
 import db.DB;
 import db.DbException;
 import model.dao.EmployeeDao;
-import model.entities.Occupation;
 import model.entities.Employee;
+import model.entities.Occupation;
 
 public class EmployeeDaoJDBC implements EmployeeDao {
 
@@ -36,6 +35,13 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 					+ "VALUES "
 					+ "(?, ?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
+			
+			st.setString(1, obj.getName());
+			st.setString(2, obj.getEmail());
+			st.setString(3, obj.getCelular());
+			st.setDate(4, new java.sql.Date(obj.getAdmissionDate().getTime()));
+			st.setString(5, obj.getDepartment());
+			st.setInt(6, obj.getOccupation().getId());
 			
 			
 			
@@ -72,7 +78,6 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 			
 			st.setString(1, obj.getName());
 			st.setString(2, obj.getEmail());
-			
 			st.setString(3, obj.getCelular());
 			st.setDate(4, new java.sql.Date(obj.getAdmissionDate().getTime()));
 			st.setString(5, obj.getDepartment());

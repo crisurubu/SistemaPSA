@@ -152,7 +152,7 @@ public class EmployeeFormController implements Initializable {
 		if (txtCelular.getText() == null || txtCelular.getText().trim().equals("")) {
 			exception.addError("celular", "Field can't be empty");
 		}
-		obj.setEmail(txtCelular.getText());
+		obj.setCelular(txtCelular.getText());
 		
 		
 		if(dpAdmissionDate.getValue() == null) {
@@ -164,7 +164,7 @@ public class EmployeeFormController implements Initializable {
 		}
 				
 		if(txtDepartment.getText() == null || txtDepartment.getText().trim().equals("")) {
-			exception.addError("department", "Fields can 't empty");
+			exception.addError("department", "Fields can't empty");
 		}
 		obj.setDepartment(txtDepartment.getText());
 		
@@ -211,7 +211,8 @@ public class EmployeeFormController implements Initializable {
 		txtId.setText(String.valueOf(entity.getId()));
 		txtName.setText(entity.getName());
 		txtEmail.setText(entity.getEmail());
-		txtEmail.setText(entity.getCelular());
+		txtCelular.setText(entity.getCelular());
+		txtDepartment.setText(entity.getDepartment());
 		
 		if (entity.getAdmissionDate() != null) {
 
