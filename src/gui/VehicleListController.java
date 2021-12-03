@@ -32,6 +32,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Vehicle;
 import model.services.VehicleService;
+import model.services.VehicleStatusService;
 
 public class VehicleListController implements Initializable, DataChangeListener{
 
@@ -39,6 +40,10 @@ public class VehicleListController implements Initializable, DataChangeListener{
 	
 	@FXML
 	private TableView<Vehicle> tableViewVehicle;
+	
+	@FXML
+	private TableColumn<Vehicle, Integer> tableColumnId;
+	
 	
 	@FXML
 	private TableColumn<Vehicle, String> tableColumnChassis;
@@ -90,11 +95,13 @@ public class VehicleListController implements Initializable, DataChangeListener{
 	}
 
 	private void initializeNodes() {
+		
+		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnChassis.setCellValueFactory(new PropertyValueFactory<>("chassis"));
 		tableColumnModel.setCellValueFactory(new PropertyValueFactory<>("model"));
 		tableColumnStatus.setCellValueFactory(new PropertyValueFactory<>("vehicleStatus"));
 		tableColumnDateEntry.setCellValueFactory(new PropertyValueFactory<>("dateEntry"));
-		tableColumnExitDate.setCellValueFactory(new PropertyValueFactory<>("ExitDate"));
+		tableColumnExitDate.setCellValueFactory(new PropertyValueFactory<>("exitDate"));
 		Utils.formatTableColumnDate(tableColumnDateEntry, "dd/MM/yyyy");
 		Utils.formatTableColumnDate(tableColumnExitDate, "dd/MM/yyyy");
 		
@@ -122,7 +129,8 @@ public class VehicleListController implements Initializable, DataChangeListener{
 
 			VehicleFormController controller = loader.getController();
 			controller.setVehicle(obj);
-			controller.setServices(new VehicleService());
+			controller.setVehicleService(new VehicleService(), new VehicleStatusService());
+			controller.loadAssociateObjects();
 			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
 

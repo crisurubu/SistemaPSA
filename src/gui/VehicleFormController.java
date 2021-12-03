@@ -2,8 +2,10 @@ package gui;
 
 import java.net.URL;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -28,85 +30,85 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import model.entities.Occupation;
 import model.entities.Vehicle;
+import model.entities.VehicleStatus;
 import model.exceptions.ValidationException;
 import model.services.VehicleService;
+import model.services.VehicleStatusService;
 
-public class VehicleFormController implements Initializable {
-
-	private Vehicle entity;
-
-	private VehicleService service;
-
+public class VehicleFormController implements Initializable{
 	
-
+	private Vehicle entity;
+	
+	private VehicleService service;
+	
+	private VehicleStatusService vehicleStatus;
+	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
-
+	
 	@FXML
 	private TextField txtId;
-
-	@FXML
-	private TextField txtName;
-
-	@FXML
-	private TextField txtEmail;
 	
 	@FXML
-	private TextField txtCelular;
-
-	@FXML
-	private DatePicker dpAdmissionDate;
-
-	@FXML
-	private TextField txtDepartment;
-
-	@FXML
-	private ComboBox<Occupation> comboBoxOccupation;
-
-	@FXML
-	private Label labelErrorName;
-
-	@FXML
-	private Label labelErrorEmail;
+	private TextField txtChassis;
 	
 	@FXML
-	private Label labelErrorCelular;
-
+	private TextField txtModel;
+	
 	@FXML
-	private Label labelErrorAdmissionDate;
-
+	private DatePicker DateEntry;
+	
 	@FXML
-	private Label labelErrorDepartment;
-
+	private DatePicker ExitDate;
+	
+	@FXML
+	private ComboBox<VehicleStatus> comboBoxStatus;
+	
+	@FXML
+	private Label labelStatus;
+	
+	@FXML
+	private Label labelErrorChassis;
+	
+	@FXML
+	private Label labelErrorModel;
+	
+	@FXML
+	private Label labelErrorDateEntry;
+	
+	@FXML
+	private Label labelErrorExitDate;
+	
 	@FXML
 	private Button btSave;
-
+	
 	@FXML
 	private Button btCancel;
-
-	private ObservableList<Occupation> obsList;
-
+	
+	private ObservableList<VehicleStatus> obsList;
+	
+	
 	public void setVehicle(Vehicle entity) {
 		this.entity = entity;
 	}
-
-	public void setServices(VehicleService service) {
+	
+	public void setVehicleService(VehicleService service, VehicleStatusService vehicleStatus) {
 		this.service = service;
-		
-	}
+		this.vehicleStatus = vehicleStatus;
 
+	}
+	
 	public void subscribeDataChangeListener(DataChangeListener listener) {
 		dataChangeListeners.add(listener);
 	}
-
+	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
-		if (entity == null) {
+		if(entity == null) {
 			throw new IllegalStateException("Entity was null");
 		}
-
-		if (service == null) {
+		
+		if(service == null) {
 			throw new IllegalStateException("Service was null");
 		}
 
@@ -115,60 +117,59 @@ public class VehicleFormController implements Initializable {
 			service.saveOrUpdate(entity);
 			notifyDataChangeListeners();
 			Utils.currentStage(event).close();
-		} catch (ValidationException e) {
+		}
+		catch(ValidationException e) {
 			setErrorMessages(e.getErrors());
-		} catch (DbException e) {
+		}
+		catch(DbException e) {
 			Alerts.showAlert("Error saving object", null, e.getMessage(), AlertType.ERROR);
 		}
 	}
-
+	
 	private void notifyDataChangeListeners() {
-		for (DataChangeListener listener : dataChangeListeners) {
+		for(DataChangeListener listener : dataChangeListeners) {
 			listener.onDataChanged();
 		}
-
+		
 	}
 
 	private Vehicle getFormData() {
 		Vehicle obj = new Vehicle();
 		ValidationException exception = new ValidationException("Validation error");
+		
+		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		
+		if(txtChassis.getText() == null || txtChassis.getText().trim().equals("")) {
+			exception.addError("Chassis", "Field can't be empty");
+		}
+		obj.setChassis(txtChassis.getText());
+		
 
-		
-
-		if (txtName.getText() == null || txtName.getText().trim().equals("")) {
-			exception.addError("name", "Field can't be empty");
+		if(txtModel.getText() == null || txtModel.getText().trim().equals("")) {
+			exception.addError("Model", "Fields can't empty");
 		}
-		//obj.setName(txtName.getText());
+		obj.setModel(txtModel.getText());
 		
-		if (txtEmail.getText() == null || txtEmail.getText().trim().equals("")) {
-			exception.addError("email", "Field can't be empty");
-		}
-		//obj.setEmail(txtEmail.getText());
-		
-		
-		if (txtCelular.getText() == null || txtCelular.getText().trim().equals("")) {
-			exception.addError("celular", "Field can't be empty");
-		}
-		//obj.setCelular(txtCelular.getText());
-		
-		
-		if(dpAdmissionDate.getValue() == null) {
-			exception.addError("dpAdmissionDate", "Field can't be empty");
+		if(DateEntry.getValue() == null) {
+			exception.addError("DateEntry", "Field can't be empty");
 		}
 		else {
-			Instant instant = Instant.from(dpAdmissionDate.getValue().atStartOfDay(ZoneId.systemDefault()));
-			//obj.setAdmissionDate(Date.from(instant));
+			Instant instant = Instant.from(DateEntry.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setDateEntry(Date.from(instant));
 		}
-				
-		if(txtDepartment.getText() == null || txtDepartment.getText().trim().equals("")) {
-			exception.addError("department", "Fields can't empty");
+		
+		if(ExitDate.getValue() == null) {
+			exception.addError("ExitDate", "Field can't be empty");
 		}
-		//obj.setDepartment(txtDepartment.getText());
+		else {
+			Instant instant = Instant.from(ExitDate.getValue().atStartOfDay(ZoneId.systemDefault()));
+			obj.setExitDate(Date.from(instant));
+		}
+		
+		obj.setVehicleStatus(comboBoxStatus.getValue());
 		
 		
-		//obj.setOccupation(comboBoxOccupation.getValue());
-
-		if (exception.getErrors().size() > 0) {
+		if(exception.getErrors().size() > 0) {
 			throw exception;
 		}
 
@@ -179,76 +180,88 @@ public class VehicleFormController implements Initializable {
 	public void onBtCancelAction(ActionEvent event) {
 		Utils.currentStage(event).close();
 	}
+	
+	
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-
+		
 		initializeNodes();
-
+		
+		
 	}
-
 	private void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);
-		Constraints.setTextFieldMaxLength(txtName, 70);
+		Constraints.setTextFieldMaxLength(txtChassis, 70);
+		Constraints.setTextFieldMaxLength(txtModel, 40);
+		Utils.formatDatePicker(DateEntry, "dd/MM/yyyy");
+		Utils.formatDatePicker(ExitDate, "dd/MM/yyyy");
+		initializeComboBoxStatus();
 		
-		Constraints.setTextFieldMaxLength(txtEmail, 60);
-		Constraints.setTextFieldMaxLength(txtCelular, 15);
-		Utils.formatDatePicker(dpAdmissionDate, "dd/MM/yyyy");
-		Constraints.setTextFieldMaxLength(txtDepartment, 30);
-		initializeComboBoxOccupation();
-
+				
 	}
-
+	
 	public void updateFormData() {
-
-		if (entity == null) {
+		
+		if(entity == null) {
 			throw new IllegalStateException("Entity was null");
 		}
-
-		/*txtId.setText(String.valueOf(entity.getId()));
-		txtName.setText(entity.getName());
-		txtEmail.setText(entity.getEmail());
-		txtCelular.setText(entity.getCelular());
-		txtDepartment.setText(entity.getDepartment());*/
 		
-	/*	if (entity.getAdmissionDate() != null) {
+		txtId.setText(String.valueOf(entity.getId()));
+		txtChassis.setText(entity.getChassis());
+		txtModel.setText(entity.getModel());
+		
+		if (entity.getDateEntry() != null) {
 
-			dpAdmissionDate.setValue(LocalDate.ofInstant(entity.getAdmissionDate().toInstant(), ZoneId.systemDefault()));
+			DateEntry.setValue(LocalDate.ofInstant(entity.getDateEntry().toInstant(), ZoneId.systemDefault()));
 		}
 		
-		if(entity.getOccupation() == null) {
-			comboBoxOccupation.getSelectionModel().selectFirst();
+		if (entity.getExitDate() != null) {
+
+			DateEntry.setValue(LocalDate.ofInstant(entity.getExitDate().toInstant(), ZoneId.systemDefault()));
+		}
+		
+		if(entity.getVehicleStatus() == null) {
+			comboBoxStatus.getSelectionModel().selectFirst();
 		}
 		else {
-			comboBoxOccupation.setValue(entity.getOccupation());
-		}*/
+			comboBoxStatus.setValue(entity.getVehicleStatus());
+		}
+		
+	}
+	
+	public void loadAssociateObjects() {
+		if (vehicleStatus == null) {
+			throw new IllegalStateException("VehicleService was null");
+		}
 
+		List<VehicleStatus> list = vehicleStatus.findAll();
+		obsList = FXCollections.observableArrayList(list);
+		comboBoxStatus.setItems(obsList);
+	}
+	
+	private void setErrorMessages(Map<String, String> errors) {
+		Set<String> fields = errors.keySet();
+		labelErrorChassis.setText((fields.contains("chassis") ? errors.get("chassis") : ""));
+		labelErrorModel.setText((fields.contains("model") ? errors.get("model") : ""));
+		labelErrorDateEntry.setText((fields.contains("dateEntry") ? errors.get("dateEntry") : ""));
+		labelErrorExitDate.setText((fields.contains("exitDate") ? errors.get("exitDate") : ""));
+		
+		
+	}
+	private void initializeComboBoxStatus() {
+		Callback<ListView<VehicleStatus>, ListCell<VehicleStatus>> factory = lv -> new ListCell<VehicleStatus>() {
+			@Override
+			protected void updateItem(VehicleStatus item, boolean empty) {
+				super.updateItem(item, empty);
+				setText(empty ? "" : item.getStatus());
+			}
+		};
+		comboBoxStatus.setCellFactory(factory);
+		comboBoxStatus.setButtonCell(factory.call(null));
 	}
 
 	
-
-	private void setErrorMessages(Map<String, String> errors) {
-		Set<String> fields = errors.keySet();
-		
-		labelErrorName.setText((fields.contains("name") ? errors.get("name") : ""));
-		labelErrorEmail.setText((fields.contains("email") ? errors.get("email") : ""));
-		labelErrorCelular.setText((fields.contains("celular") ? errors.get("celular") : ""));
-		labelErrorDepartment.setText((fields.contains("department") ? errors.get("department") : ""));
-			
-		
-		
-	}
-
-	private void initializeComboBoxOccupation() {
-		Callback<ListView<Occupation>, ListCell<Occupation>> factory = lv -> new ListCell<Occupation>() {
-			@Override
-			protected void updateItem(Occupation item, boolean empty) {
-				super.updateItem(item, empty);
-				setText(empty ? "" : item.getName());
-			}
-		};
-		comboBoxOccupation.setCellFactory(factory);
-		comboBoxOccupation.setButtonCell(factory.call(null));
-	}
+	
 
 }

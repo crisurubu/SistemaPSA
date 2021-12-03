@@ -4,6 +4,7 @@ import db.DB;
 import model.dao.impl.EmployeeDaoJDBC;
 import model.dao.impl.OccupationDaoJDBC;
 import model.dao.impl.VehicleDaoJDBC;
+import model.dao.impl.VehicleStatusDaoJDBC;
 
 public class DaoFactory {
 	
@@ -18,5 +19,11 @@ public class DaoFactory {
 	public static VehicleDao createVehicleDao() {
 		return new VehicleDaoJDBC(DB.getConnection());
 	}
-
+	
+	
+	public static VehicleStatusDao createVehicleStatusDao() {
+		return new VehicleStatusDaoJDBC(DB.getConnection());
+	}
+	
+	
 }

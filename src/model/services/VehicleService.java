@@ -1,3 +1,4 @@
+
 package model.services;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class VehicleService {
 	}
 	
 	public void saveOrUpdate(Vehicle obj) {
-		if(obj.getChassis() == null)
+		if(obj.getId() == null)
 		{
 			dao.insert(obj);
 		}

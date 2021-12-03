@@ -4,30 +4,42 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import model.entities.enums.VehicleStatus;
 
 
 public class Vehicle implements Serializable{
 
 	
 	private static final long serialVersionUID = 1L;
+	private Integer id;
 	private String chassis;
 	private String model;
 	private Date dateEntry;
 	private Date exitDate;
 	private VehicleStatus vehicleStatus;
-	private String status;
 	
 	public Vehicle() {}
 
-	public Vehicle(String chassis, String model, Date dateEntry, Date exitDate, VehicleStatus vehicleStatus) {
+	public Vehicle(Integer id, String chassis, String model, Date dateEntry, Date exitDate, VehicleStatus vehicleStatus) {
 		super();
+		this.id = id;
 		this.chassis = chassis;
 		this.model = model;
 		this.dateEntry = dateEntry;
 		this.exitDate = exitDate;
 		this.vehicleStatus = vehicleStatus;
 		
+		
+	}
+	
+
+	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getChassis() {
@@ -62,20 +74,14 @@ public class Vehicle implements Serializable{
 		this.exitDate = exitDate;
 	}
 
+	
+
 	public VehicleStatus getVehicleStatus() {
 		return vehicleStatus;
 	}
 
 	public void setVehicleStatus(VehicleStatus vehicleStatus) {
 		this.vehicleStatus = vehicleStatus;
-	}
-	
-	public String getStatus() {
-		return status;
-	}
-
-	public String setStatus() {
-		return status;
 	}
 
 	public static long getSerialversionuid() {
@@ -84,7 +90,7 @@ public class Vehicle implements Serializable{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(chassis);
+		return Objects.hash(id, chassis);
 	}
 
 	@Override
@@ -96,15 +102,19 @@ public class Vehicle implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Vehicle other = (Vehicle) obj;
-		return Objects.equals(chassis, other.chassis);
+		return Objects.equals(id, other.id) && Objects.equals(chassis, other.chassis);
 	}
 
 	@Override
 	public String toString() {
-		return "Vehicle [chassis=" + chassis + ", model=" + model + ", dateEntry=" + dateEntry + ", exitDate="
-				+ exitDate + ", vehicleStatus=" + vehicleStatus + "]";
+		return "Vehicle [Id=" + id + ", chassis=" + chassis + ", model=" + model + ", dateEntry=" + dateEntry
+				+ ", exitDate=" + exitDate + ", vehicleStatus=" + vehicleStatus + "]";
 	}
 
+	
+
+	
+	
 	
 	
 	

@@ -26,11 +26,12 @@
       </ToolBar>
       <TableView fx:id="tableViewVehicle" prefHeight="200.0" prefWidth="200.0">
         <columns>
+            <TableColumn fx:id="tableColumnId" prefWidth="75.0" text="Id" />
           <TableColumn fx:id="tableColumnChassis" prefWidth="75.0" text="Chassis" />
           <TableColumn fx:id="tableColumnModel" prefWidth="75.0" text="Model" />
             <TableColumn fx:id="tableColumnDateEntry" prefWidth="75.0" text="DateEntry" />
             <TableColumn fx:id="tableColumnExitDate" prefWidth="75.0" text="ExitDate" />
-            <TableColumn fx:id="tableColumnStatus" prefWidth="102.0" text="Status" />
+            <TableColumn fx:id="tableColumnStatus" prefWidth="75.0" text="Status" />
             <TableColumn fx:id="tableColumnEDIT" prefWidth="48.0" />
             <TableColumn fx:id="tableColumnREMOVE" prefWidth="75.0" />
         </columns>

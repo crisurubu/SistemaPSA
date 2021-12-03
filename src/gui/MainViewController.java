@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import model.services.EmployeeService;
 import model.services.OccupationService;
 import model.services.VehicleService;
+import model.services.VehicleStatusService;
 
 
 public class MainViewController implements Initializable {
@@ -30,6 +31,9 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	private MenuItem menuItemVehicle;
+	
+	@FXML
+	private MenuItem menuItemVehicleStatus;
 
 	@FXML
 	private MenuItem menuItemAbout;
@@ -60,6 +64,17 @@ public class MainViewController implements Initializable {
 			controller.setVehicleService(new VehicleService());
 			controller.updateTableView();
 			System.out.println("onMenuItemVehicleAction()");
+		});
+
+	}
+	
+
+	@FXML
+	public void onMenuItemVehicleStatusAction() {
+		loadView("/gui/VehicleStatusList.fxml", (VehicleStatusListController controller) -> {
+			controller.setVehicleStatusService(new VehicleStatusService());
+			controller.updateTableView();
+			System.out.println("onMenuItemVehicleStatusAction()");
 		});
 
 	}

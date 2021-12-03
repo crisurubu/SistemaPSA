@@ -73,7 +73,7 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 		try {
 			st = conn.prepareStatement(
 					"UPDATE employee "
-					+ "SET Name = ?, Email = ?, Celular = ?, AdmisionDate = ?, Department = ?, Occupation_Id "
+					+ "SET Name = ?, Email = ?, Celular = ?, AdmissionDate = ?, Department = ?, Occupation_Id = ? "
 					+ "WHERE Id = ?");
 			
 			st.setString(1, obj.getName());
@@ -119,7 +119,7 @@ public class EmployeeDaoJDBC implements EmployeeDao {
 		try {
 			st = conn.prepareStatement(
 					"SELECT employee.*,occupation.Name as Name "
-					+ "FROM employee INNER JOIN occpation "
+					+ "FROM employee INNER JOIN occupation "
 					+ "ON employee.Occupation_Id = occupation.Id "
 					+ "WHERE employee.Id = ?");
 			
