@@ -29,5 +29,9 @@ private VehicleStatusDao dao =  DaoFactory.createVehicleStatusDao();
 		dao.deleteById(obj.getId());
 	}
 	
+	public VehicleStatus findById(Integer id) {
+		return dao.findById(id);
+	}
+	
 
 }

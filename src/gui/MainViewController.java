@@ -18,6 +18,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import model.services.EmployeeService;
 import model.services.OccupationService;
+import model.services.ProductionService;
 import model.services.VehicleService;
 import model.services.VehicleStatusService;
 
@@ -34,6 +35,10 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	private MenuItem menuItemVehicleStatus;
+	
+	@FXML
+	private MenuItem menuItemProduction;
+	
 
 	@FXML
 	private MenuItem menuItemAbout;
@@ -76,6 +81,17 @@ public class MainViewController implements Initializable {
 			controller.updateTableView();
 			System.out.println("onMenuItemVehicleStatusAction()");
 		});
+
+	}
+	
+	@FXML
+	public void onMenuItemProductionAction() {
+		loadView("/gui/ProductionList.fxml", (ProductionListController controller) -> {
+			controller.setProductionService(new ProductionService());
+			controller.updateTableView();
+			
+		});
+		
 
 	}
 

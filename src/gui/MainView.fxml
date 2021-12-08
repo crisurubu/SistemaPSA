@@ -18,6 +18,7 @@
                         <MenuItem fx:id="menuItemOccupation" mnemonicParsing="false" onAction="#onMenuItemOccupationAction" text="Occupation" />
                         <MenuItem fx:id="menuItemVehicle" mnemonicParsing="false" onAction="#onMenuItemVehicleAction" text="Vehicle" />
                         <MenuItem fx:id="menuItemVehicleStatus" mnemonicParsing="false" onAction="#onMenuItemVehicleStatusAction" text="VehicleStatus" />
+                        <MenuItem fx:id="menuItemProduction" mnemonicParsing="false" onAction="#onMenuItemProductionAction" text="Production" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">

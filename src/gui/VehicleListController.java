@@ -43,8 +43,7 @@ public class VehicleListController implements Initializable, DataChangeListener{
 	
 	@FXML
 	private TableColumn<Vehicle, Integer> tableColumnId;
-	
-	
+		
 	@FXML
 	private TableColumn<Vehicle, String> tableColumnChassis;
 	

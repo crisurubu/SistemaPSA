@@ -3,6 +3,7 @@ package model.dao;
 import db.DB;
 import model.dao.impl.EmployeeDaoJDBC;
 import model.dao.impl.OccupationDaoJDBC;
+import model.dao.impl.ProductionDaoJDBC;
 import model.dao.impl.VehicleDaoJDBC;
 import model.dao.impl.VehicleStatusDaoJDBC;
 
@@ -24,6 +25,13 @@ public class DaoFactory {
 	public static VehicleStatusDao createVehicleStatusDao() {
 		return new VehicleStatusDaoJDBC(DB.getConnection());
 	}
+
+	public static ProductionDao createProductionDao() {
+		return new ProductionDaoJDBC(DB.getConnection());
+		
+	}
+
+	
 	
 	
 }
