@@ -3,21 +3,22 @@ package model.services;
 
 import java.util.List;
 
+import model.dao.AppointmentsDao;
 import model.dao.DaoFactory;
-import model.dao.ProductionDao;
+import model.entities.Appointments;
 import model.entities.Production;
 import model.entities.Vehicle;
 
-public class ProductionService {
+public class AppointmentsService {
 	
-	private ProductionDao dao = DaoFactory.createProductionDao();
+	private AppointmentsDao dao = DaoFactory.createAppointmentsDao();
 	
 	
 	public List<Vehicle> findAll(){
 		return dao.findAll();
 	}
 	
-	public void saveOrUpdate(Production obj) {
+	public void saveOrUpdate(Appointments obj) {
 		if(obj.getId() == null)
 		{
 			dao.insert(obj);
@@ -34,10 +35,6 @@ public class ProductionService {
 	
 	public Vehicle findById(Integer id) {
 		return dao.findById(id);
-	}
-	
-	public Production findByIdProduction(Integer id) {
-		return dao.findByIdProduction(id);
 	}
 	
 	

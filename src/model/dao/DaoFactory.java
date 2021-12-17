@@ -1,6 +1,7 @@
 package model.dao;
 
 import db.DB;
+import model.dao.impl.AppointmentsDaoJDBC;
 import model.dao.impl.EmployeeDaoJDBC;
 import model.dao.impl.OccupationDaoJDBC;
 import model.dao.impl.ProductionDaoJDBC;
@@ -29,6 +30,10 @@ public class DaoFactory {
 	public static ProductionDao createProductionDao() {
 		return new ProductionDaoJDBC(DB.getConnection());
 		
+	}
+
+	public static AppointmentsDao createAppointmentsDao() {
+		return new AppointmentsDaoJDBC(DB.getConnection());
 	}
 
 	

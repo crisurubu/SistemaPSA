@@ -2,20 +2,18 @@ package model.dao;
 
 import java.util.List;
 
-import model.entities.Production;
+import model.entities.Appointments;
 import model.entities.Vehicle;
 import model.entities.VehicleStatus;
 
-public interface ProductionDao {
+public interface AppointmentsDao {
 	
-	void insert(Production obj);
-	void update(Production obj);
+	void insert(Appointments obj);
+	void update(Appointments obj);
 	void deleteById(Integer id);
 	Vehicle findById(Integer id);
-	
 	List<Vehicle> findAll();
 	List<Vehicle> findByVehicleStatus(VehicleStatus vehicleStatus);
-	Production findByIdProduction(Integer id);
 	
 	
 

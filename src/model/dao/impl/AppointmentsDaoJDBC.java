@@ -13,51 +13,18 @@ import java.util.Map;
 import db.DB;
 import db.DbException;
 import db.DbIntegrityException;
-import model.dao.ProductionDao;
-//import model.entities.Appointments;
-import model.entities.Production;
+import model.dao.AppointmentsDao;
+import model.entities.Appointments;
 import model.entities.Vehicle;
 import model.entities.VehicleStatus;
 
 
-public class ProductionDaoJDBC implements ProductionDao {
+public class AppointmentsDaoJDBC implements AppointmentsDao {
 
 	private Connection conn;
 
-	public ProductionDaoJDBC(Connection conn) {
+	public AppointmentsDaoJDBC(Connection conn) {
 		this.conn = conn;
-	}
-	@Override
-	public Production findByIdProduction(Integer id) {
-		PreparedStatement st = null;
-		ResultSet rs = null;
-		try {
-			String sql = "SELECT production.*, vehicle.Id "
-					+ "FROM production INNER JOIN vehicle "
-					+ "ON production.Vehicle_Id = vehicle.Id  "
-					+ "WHERE vehicle.Id = ?";
-			st = conn.prepareStatement(sql);
-			st.setInt(1, id);
-			rs = st.executeQuery();
-
-			while (rs.next()) {
-				Production production = new Production();
-				production.setId(rs.getInt("Id"));
-
-							
-				return production;
-
-			}
-
-		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
-		} finally {
-			DB.closeStatement(st);
-			DB.closeResultSet(rs);
-		}
-		
-		return null;
-		
 	}
 
 	@Override
@@ -76,7 +43,7 @@ public class ProductionDaoJDBC implements ProductionDao {
 			if (rs.next()) {
 
 				VehicleStatus vst = instantiateVehicleStatus(rs);
-				Vehicle obj       = instantiateVehicle(rs, vst);				
+				Vehicle obj = instantiateVehicle(rs, vst);				
 				return obj;
 
 			}
@@ -92,18 +59,19 @@ public class ProductionDaoJDBC implements ProductionDao {
 	}
 	
 	@Override
-	public void insert(Production obj) {
+	public void insert(Appointments obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO production "
-					+ "(Vehicle_Id) "
+					"INSERT INTO appointments "
+					+ "(appointments, Production_Id, Status) "
 					+ "VALUES "
-					+ "(?)"
+					+ "(?, ?, ?)"
 					, Statement.RETURN_GENERATED_KEYS);
-						
-
-			st.setInt(1, obj.getVehicle_Id());
+			
+			st.setString(1, obj.getAppointments());
+			st.setInt(2, obj.getProduction_Id());
+			st.setString(3, obj.getStatus());
 			
 
 
@@ -136,7 +104,7 @@ public class ProductionDaoJDBC implements ProductionDao {
 			st = conn.prepareStatement("SELECT a.*, b.Status "
 					+ "FROM vehicle as A "
 					+ "INNER JOIN vehicleStatus as B "
-					+ "on a.Status_Id = b.Id and a.Status_Id = 1");
+					+ "on a.Status_Id = b.Id and a.Status_Id = 2");
 							
 			
 			rs = st.executeQuery();
@@ -233,17 +201,18 @@ public class ProductionDaoJDBC implements ProductionDao {
 	}
 
 	@Override
-	public void update(Production obj) {
+	public void update(Appointments obj) {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-				"UPDATE production " 
-			   +"SET vehicle_Id = ? "
+				"UPDATE appointments " 
+			   +"SET appointments = ?, Production_Id = ?, Status = ? "
 			   +"WHERE Id = ?");
 
-			st.setInt(1, obj.getId());
-			st.setInt(2, obj.getVehicle_Id());
-			
+			st.setString(1, obj.getAppointments());
+			st.setInt(2, obj.getProduction_Id());
+			st.setString(3, obj.getStatus());
+			st.setInt(4, obj.getId());
 
 
 			st.executeUpdate();
@@ -262,7 +231,7 @@ public class ProductionDaoJDBC implements ProductionDao {
 		PreparedStatement st = null;
 		try {
 			st = conn.prepareStatement(
-				"DELETE FROM production WHERE Id = ?");
+				"DELETE FROM appointments WHERE Id = ?");
 
 			st.setInt(1, id);
 
@@ -276,24 +245,9 @@ public class ProductionDaoJDBC implements ProductionDao {
 		}
 		
 	}
+
 	
-/*	private Appointments instantiateAppointments(ResultSet rs) throws SQLException {
-		Appointments dep = new Appointments();
-		dep.setId(rs.getInt("Production_Id"));
-		dep.setStatus(rs.getString("Appointments"));
-		dep.setStatus(rs.getString("Status"));
-		return dep;
-	}
-	
-	private Production instantiateProduction(ResultSet rs, Appointments vst) throws SQLException {
-		Production obj = new Production();
-		obj.setId(rs.getInt("Id"));
-		obj.setVehicle_Id(rs.getInt("vehicle_Id"));
-		
-		return obj;
-	}
-	*/
-	
+
 	
 }
 

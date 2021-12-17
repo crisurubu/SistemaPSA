@@ -16,6 +16,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.services.AppointmentsService;
 import model.services.EmployeeService;
 import model.services.OccupationService;
 import model.services.ProductionService;
@@ -38,6 +39,9 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	private MenuItem menuItemProduction;
+	
+	@FXML
+	private MenuItem menuItemAppointments;
 	
 
 	@FXML
@@ -88,6 +92,17 @@ public class MainViewController implements Initializable {
 	public void onMenuItemProductionAction() {
 		loadView("/gui/ProductionList.fxml", (ProductionListController controller) -> {
 			controller.setProductionService(new ProductionService());
+			controller.updateTableView();
+			
+		});
+		
+
+	}
+	
+	@FXML
+	public void onMenuItemAppointmentsAction() {
+		loadView("/gui/AppointmentsList.fxml", (AppointmentsListController controller) -> {
+			controller.setAppointmentsService(new AppointmentsService());
 			controller.updateTableView();
 			
 		});
