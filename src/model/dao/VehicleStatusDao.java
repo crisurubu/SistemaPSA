@@ -2,6 +2,7 @@ package model.dao;
 
 import java.util.List;
 
+import model.entities.Vehicle;
 import model.entities.VehicleStatus;
 
 public interface VehicleStatusDao {
@@ -11,5 +12,6 @@ public interface VehicleStatusDao {
 	void deleteById(Integer id);
 	VehicleStatus findById(Integer id);
     List<VehicleStatus> findAll();
+	void updateStatus(Vehicle obj);
 
 }

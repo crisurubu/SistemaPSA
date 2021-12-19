@@ -6,7 +6,6 @@ import java.util.List;
 import model.dao.AppointmentsDao;
 import model.dao.DaoFactory;
 import model.entities.Appointments;
-import model.entities.Production;
 import model.entities.Vehicle;
 
 public class AppointmentsService {
@@ -16,6 +15,10 @@ public class AppointmentsService {
 	
 	public List<Vehicle> findAll(){
 		return dao.findAll();
+	}
+	
+	public List<Appointments> findAllAppointments(){
+		return dao.findAllAppointments();
 	}
 	
 	public void saveOrUpdate(Appointments obj) {
@@ -29,12 +32,16 @@ public class AppointmentsService {
 		}
 		
 	}
-	public void remove(Production obj) {
+	public void remove(Appointments obj) {
 		dao.deleteById(obj.getId());
 	}
 	
 	public Vehicle findById(Integer id) {
 		return dao.findById(id);
+	}
+	
+	public Appointments findByIdAppointments(Integer id) {
+		return dao.findByIdAppointments(id);
 	}
 	
 	

@@ -136,18 +136,6 @@ public class AppointmentsDaoJDBC implements AppointmentsDao {
 	}
 
 
-	
-	
-	private VehicleStatus instantiateVehicleStatus(ResultSet rs) throws SQLException {
-		VehicleStatus dep = new VehicleStatus();
-		dep.setId(rs.getInt("Status_Id"));
-		dep.setStatus(rs.getString("Status"));
-		return dep;
-	}
-
-
-	
-	
 	@Override
 	public List<Vehicle> findByVehicleStatus(VehicleStatus vehicleStatus) {
 		PreparedStatement st = null;
@@ -189,17 +177,6 @@ public class AppointmentsDaoJDBC implements AppointmentsDao {
 		}
 	}
 
-	private Vehicle instantiateVehicle(ResultSet rs, VehicleStatus vst) throws SQLException {
-		Vehicle obj = new Vehicle();
-		obj.setId(rs.getInt("Id"));
-		obj.setChassis(rs.getString("Chassis"));
-		obj.setModel(rs.getString("Model"));
-		obj.setDateEntry(new java.util.Date(rs.getTimestamp("DateEntry").getTime()));
-		obj.setExitDate(new java.util.Date(rs.getTimestamp("ExitDate").getTime()));
-		obj.setVehicleStatus(vst);
-		return obj;
-	}
-
 	@Override
 	public void update(Appointments obj) {
 		PreparedStatement st = null;
@@ -213,8 +190,6 @@ public class AppointmentsDaoJDBC implements AppointmentsDao {
 			st.setInt(2, obj.getProduction_Id());
 			st.setString(3, obj.getStatus());
 			st.setInt(4, obj.getId());
-
-
 			st.executeUpdate();
 		}
 		catch (SQLException e) {
@@ -225,7 +200,8 @@ public class AppointmentsDaoJDBC implements AppointmentsDao {
 		}
 		
 	}
-
+	
+	
 	@Override
 	public void deleteById(Integer id) {
 		PreparedStatement st = null;
@@ -245,8 +221,88 @@ public class AppointmentsDaoJDBC implements AppointmentsDao {
 		}
 		
 	}
-
 	
+	public Appointments findByIdAppointments(Integer id) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			String sql = "SELECT Appointments.* "
+					+ "FROM Appointments "
+					+ "WHERE Appointments.Id = ?";
+			st = conn.prepareStatement(sql);
+			st.setInt(1, id);
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+				Appointments obj = new Appointments();
+				obj.setId(rs.getInt("Id"));
+				obj.setAppointments(rs.getString("Appointments"));
+				obj.setProduction_Id(rs.getInt("Production_Id"));
+				obj.setStatus(rs.getString("Status"));
+				return obj;
+
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+		return null;
+	}
+	
+	@Override
+	public List<Appointments> findAllAppointments() {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			st = conn.prepareStatement(
+					"SELECT * FROM Appointments ORDER BY Id");
+			rs = st.executeQuery();
+			
+			List<Appointments> list = new ArrayList<>();
+			
+			while(rs.next()) {
+				Appointments obj = new Appointments();
+				obj.setId(rs.getInt("Id"));
+				obj.setAppointments(rs.getString("Appointments"));
+				obj.setProduction_Id(rs.getInt("Production_Id"));
+				obj.setStatus(rs.getString("Status"));
+				list.add(obj);
+			}
+			return list;
+			
+		} 
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+			
+		}
+		finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+	}
+	
+	private Vehicle instantiateVehicle(ResultSet rs, VehicleStatus vst) throws SQLException {
+		Vehicle obj = new Vehicle();
+		obj.setId(rs.getInt("Id"));
+		obj.setChassis(rs.getString("Chassis"));
+		obj.setModel(rs.getString("Model"));
+		obj.setDateEntry(new java.util.Date(rs.getTimestamp("DateEntry").getTime()));
+		obj.setExitDate(new java.util.Date(rs.getTimestamp("ExitDate").getTime()));
+		obj.setVehicleStatus(vst);
+		return obj;
+	}
+
+
+	private VehicleStatus instantiateVehicleStatus(ResultSet rs) throws SQLException {
+		VehicleStatus dep = new VehicleStatus();
+		dep.setId(rs.getInt("Status_Id"));
+		dep.setStatus(rs.getString("Status"));
+		return dep;
+	}
 
 	
 }

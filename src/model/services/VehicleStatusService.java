@@ -4,6 +4,7 @@ import java.util.List;
 
 import model.dao.DaoFactory;
 import model.dao.VehicleStatusDao;
+import model.entities.Vehicle;
 import model.entities.VehicleStatus;
 
 public class VehicleStatusService {
@@ -31,6 +32,9 @@ private VehicleStatusDao dao =  DaoFactory.createVehicleStatusDao();
 	
 	public VehicleStatus findById(Integer id) {
 		return dao.findById(id);
+	}
+	public void upDateStatus(Vehicle vehicle) {
+		 dao.updateStatus(vehicle);
 	}
 	
 

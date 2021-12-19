@@ -232,7 +232,8 @@ public class VehicleDaoJDBC implements VehicleDao {
 			DB.closeResultSet(rs);
 		}
 	}
-
+	
+	
 	private Vehicle instantiateVehicle(ResultSet rs, VehicleStatus vst) throws SQLException {
 		Vehicle obj = new Vehicle();
 		obj.setId(rs.getInt("Id"));

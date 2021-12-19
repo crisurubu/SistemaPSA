@@ -2,12 +2,11 @@ package gui;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import javax.swing.JOptionPane;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -22,44 +21,46 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Appointments;
+import model.entities.Production;
+import model.entities.Vehicle;
+import model.entities.VehicleStatus;
 import model.exceptions.ValidationException;
 import model.services.AppointmentsService;
+import model.services.ProductionService;
+import model.services.VehicleService;
 
-public class AppointmentsFormAddController implements Initializable {
+public class CloseAppointmentsFormController implements Initializable {
 
 	private Appointments entity;
 
 	private AppointmentsService service;
-
-
+	
+	
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
 	@FXML
 	private TextField txtId;
 
 	@FXML
-	private TextField txtAppointments;
+	private TextField txtAppoitments;
 
 	@FXML
-	private TextField txtProduction_Id;
+	private TextField txtProductionId;
 	
 	@FXML
 	private TextField txtStatus;
 
-	@FXML
-	private Label labelErrorName;
-
-	@FXML
-	private Label labelErrorEmail;
+	
 	
 	@FXML
-	private Label labelErrorCelular;
+	private Label labelErrorAppointments;
 
 	@FXML
-	private Label labelErrorAdmissionDate;
-
+	private Label labelErrorProductionId;
+	
 	@FXML
-	private Label labelErrorDepartment;
+	private Label labelErrorStatus;
+
 
 	@FXML
 	private Button btSave;
@@ -67,7 +68,7 @@ public class AppointmentsFormAddController implements Initializable {
 	@FXML
 	private Button btCancel;
 
-	//private ObservableList<Occupation> obsList;
+	
 
 	public void setAppointments(Appointments entity) {
 		this.entity = entity;
@@ -95,9 +96,10 @@ public class AppointmentsFormAddController implements Initializable {
 		try {
 			entity = getFormData();
 			service.saveOrUpdate(entity);
+			updateVehicleStatus();
+			
 			notifyDataChangeListeners();
 			Utils.currentStage(event).close();
-			JOptionPane.showMessageDialog(null, "Appointments Success Full save ");
 		} catch (ValidationException e) {
 			setErrorMessages(e.getErrors());
 		} catch (DbException e) {
@@ -118,21 +120,21 @@ public class AppointmentsFormAddController implements Initializable {
 
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
 
-		if (txtAppointments.getText() == null || txtAppointments.getText().trim().equals("")) {
-			exception.addError("name", "Field can't be empty");
+		if (txtAppoitments.getText() == null || txtAppoitments.getText().trim().equals("")) {
+			exception.addError("Appointments", "Field can't be empty");
 		}
-		obj.setAppointments(txtAppointments.getText());
-		
-		if (txtProduction_Id.getText() == null || txtProduction_Id.getText().trim().equals("")) {
-			exception.addError("email", "Field can't be empty");
-		}
-		obj.setProduction_Id(Utils.tryParseToInt(txtProduction_Id.getText()));
-		
+		obj.setAppointments(txtAppoitments.getText());
 		
 		if (txtStatus.getText() == null || txtStatus.getText().trim().equals("")) {
-			exception.addError("celular", "Field can't be empty");
+			exception.addError("Status", "Field can't be empty");
 		}
-		obj.setStatus("OPEN");
+		obj.setStatus(txtStatus.getText());
+		
+		
+		if (txtProductionId.getText() == null || txtProductionId.getText().trim().equals("")) {
+			exception.addError("Production Id", "Field can't be empty");
+		}
+		obj.setProduction_Id(Utils.tryParseToInt(txtProductionId.getText()));
 		
 		if (exception.getErrors().size() > 0) {
 			throw exception;
@@ -155,9 +157,9 @@ public class AppointmentsFormAddController implements Initializable {
 
 	private void initializeNodes() {
 		Constraints.setTextFieldInteger(txtId);
-		Constraints.setTextFieldMaxLength(txtAppointments, 300);
-		Constraints.setTextFieldMaxLength(txtProduction_Id, 100);
-		Constraints.setTextFieldMaxLength(txtStatus, 5);
+		Constraints.setTextFieldMaxLength(txtAppoitments, 2070);
+		Constraints.setTextFieldInteger(txtProductionId);
+		Constraints.setTextFieldMaxLength(txtStatus, 20);
 		
 
 	}
@@ -169,34 +171,61 @@ public class AppointmentsFormAddController implements Initializable {
 		}
 
 		txtId.setText(String.valueOf(entity.getId()));
-		txtAppointments.setText(entity.getAppointments());
-		txtProduction_Id.setText(String.valueOf(entity.getProduction_Id()));
-		txtStatus.setText(entity.getStatus());
+		txtAppoitments.setText(entity.getAppointments());
+		txtProductionId.setText(String.valueOf(entity.getProduction_Id()));
+		txtStatus.setText("CLOSE");
+		txtProductionId.setEditable(false);
+	
 		
-
 	}
 
-	/*public void loadAssociateObjects() {
-		if (occupationService == null) {
-			throw new IllegalStateException("OccupationService was null");
-		}
-
-		List<Occupation> list = occupationService.findAll();
-		obsList = FXCollections.observableArrayList(list);
-		comboBoxOccupation.setItems(obsList);
-	}*/
+	
 
 	private void setErrorMessages(Map<String, String> errors) {
 		Set<String> fields = errors.keySet();
 		
-		labelErrorName.setText((fields.contains("name") ? errors.get("appointments") : ""));
-		labelErrorEmail.setText((fields.contains("email") ? errors.get("production_Id") : ""));
-		labelErrorCelular.setText((fields.contains("celular") ? errors.get("status") : ""));
-	
-			
+		labelErrorAppointments.setText((fields.contains("appointments") ? errors.get("appointments") : ""));
+		labelErrorProductionId.setText((fields.contains("production_Id") ? errors.get("production_Id") : ""));
+		labelErrorStatus.setText((fields.contains("status") ? errors.get("status") : ""));
+		
 		
 		
 	}
-
 	
+	private Integer getVehicleId() {
+		ProductionService service = new ProductionService();
+		Integer id = Utils.tryParseToInt(txtProductionId.getText());
+		List<Production> list = new ArrayList<Production>();
+		list.add(service.findByProduction(id));
+		
+		Integer idVehicle = 0;
+		for(Production production : list) {
+			 idVehicle =  production.getVehicle_Id();
+			
+		}
+		return idVehicle;
+		
+	}
+	
+	private void updateVehicleStatus() {
+		VehicleService service = new VehicleService();
+		List<Vehicle> list = new ArrayList<>();
+		list.add(service.findById(getVehicleId()));
+		System.out.println(list);
+		
+		for(Vehicle vehicle : list) {
+			Integer id = vehicle.getId();
+			String chassis = vehicle.getChassis();
+			String model = vehicle.getModel();
+			Date dateEntry = vehicle.getDateEntry();
+			Date exitDate = vehicle.getExitDate();
+			VehicleStatus status = new VehicleStatus();
+			status.setId(3);
+			
+			Vehicle newVehicle = new Vehicle(id, chassis, model, dateEntry, exitDate, status);
+			service.saveOrUpdate(newVehicle);
+			
+		}
+	}
+
 }

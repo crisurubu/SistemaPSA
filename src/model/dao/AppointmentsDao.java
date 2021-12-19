@@ -12,8 +12,10 @@ public interface AppointmentsDao {
 	void update(Appointments obj);
 	void deleteById(Integer id);
 	Vehicle findById(Integer id);
+	Appointments findByIdAppointments(Integer id);
 	List<Vehicle> findAll();
 	List<Vehicle> findByVehicleStatus(VehicleStatus vehicleStatus);
+	List<Appointments> findAllAppointments();
 	
 	
 

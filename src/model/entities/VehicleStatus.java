@@ -57,7 +57,7 @@ public class VehicleStatus implements Serializable{
 
 	@Override
 	public String toString() {
-		return "VehicleStatus [id=" + id + ", status=" + status + "]";
+		return status;
 	}
 	
 	

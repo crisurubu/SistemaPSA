@@ -30,4 +30,9 @@ public class VehicleService {
 	public void remove(Vehicle obj) {
 		dao.deleteByChassis(obj.getChassis());
 	}
+	
+	
+	public Vehicle findById(Integer id) {
+		return dao.findById(id);
+	}
 }

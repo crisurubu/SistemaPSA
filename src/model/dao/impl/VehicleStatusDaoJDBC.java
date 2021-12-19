@@ -10,6 +10,7 @@ import java.util.List;
 import db.DB;
 import db.DbException;
 import model.dao.VehicleStatusDao;
+import model.entities.Vehicle;
 import model.entities.VehicleStatus;
 
 public class VehicleStatusDaoJDBC implements VehicleStatusDao{
@@ -99,8 +100,27 @@ public class VehicleStatusDaoJDBC implements VehicleStatusDao{
 
 
 	@Override
-	public void update(VehicleStatus obj) {
-		// TODO Auto-generated method stub
+	public void updateStatus(Vehicle obj) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+				"UPDATE vehicle.Status " 
+			   +"SET  Status_Id =  3"
+			   +"WHERE Id = ?");
+
+			
+			st.setInt(1, obj.getId());
+
+
+			st.executeUpdate();
+		}
+		catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} 
+		finally {
+			DB.closeStatement(st);
+		}
+
 		
 	}
 
@@ -108,6 +128,14 @@ public class VehicleStatusDaoJDBC implements VehicleStatusDao{
 
 	@Override
 	public void deleteById(Integer id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+	@Override
+	public void update(VehicleStatus obj) {
 		// TODO Auto-generated method stub
 		
 	}

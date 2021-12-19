@@ -16,6 +16,7 @@ public interface ProductionDao {
 	List<Vehicle> findAll();
 	List<Vehicle> findByVehicleStatus(VehicleStatus vehicleStatus);
 	Production findByIdProduction(Integer id);
+	Production findByProduction(Integer id);
 	
 	
 

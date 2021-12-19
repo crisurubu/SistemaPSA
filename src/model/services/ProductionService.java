@@ -40,5 +40,9 @@ public class ProductionService {
 		return dao.findByIdProduction(id);
 	}
 	
+	public Production findByProduction(Integer id) {
+		return dao.findByProduction(id);
+	}
+	
 	
 }

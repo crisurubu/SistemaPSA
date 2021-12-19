@@ -59,6 +59,41 @@ public class ProductionDaoJDBC implements ProductionDao {
 		return null;
 		
 	}
+	
+	
+	@Override
+	public Production findByProduction(Integer id) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			String sql = "SELECT * FROM production WHERE Id = ? ";
+					
+					
+			st = conn.prepareStatement(sql);
+			st.setInt(1, id);
+			rs = st.executeQuery();
+
+			while (rs.next()) {
+				Production production = new Production();
+				production.setId(rs.getInt("Id"));
+				production.setVehicle_Id(rs.getInt("Vehicle_Id"));
+
+							
+				return production;
+
+			}
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);
+		}
+		
+		return null;
+		
+	}
+
 
 	@Override
 	public Vehicle findById(Integer id) {
@@ -277,23 +312,7 @@ public class ProductionDaoJDBC implements ProductionDao {
 		
 	}
 	
-/*	private Appointments instantiateAppointments(ResultSet rs) throws SQLException {
-		Appointments dep = new Appointments();
-		dep.setId(rs.getInt("Production_Id"));
-		dep.setStatus(rs.getString("Appointments"));
-		dep.setStatus(rs.getString("Status"));
-		return dep;
-	}
-	
-	private Production instantiateProduction(ResultSet rs, Appointments vst) throws SQLException {
-		Production obj = new Production();
-		obj.setId(rs.getInt("Id"));
-		obj.setVehicle_Id(rs.getInt("vehicle_Id"));
 		
-		return obj;
-	}
-	*/
-	
 	
 }
 

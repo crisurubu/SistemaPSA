@@ -43,6 +43,9 @@ public class MainViewController implements Initializable {
 	@FXML
 	private MenuItem menuItemAppointments;
 	
+	@FXML
+	private MenuItem menuItemQuality;
+	
 
 	@FXML
 	private MenuItem menuItemAbout;
@@ -102,6 +105,16 @@ public class MainViewController implements Initializable {
 	@FXML
 	public void onMenuItemAppointmentsAction() {
 		loadView("/gui/AppointmentsList.fxml", (AppointmentsListController controller) -> {
+			controller.setAppointmentsService(new AppointmentsService());
+			controller.updateTableView();
+			
+		});
+		
+
+	}
+	@FXML
+	public void onMenuItemQuality() {
+		loadView("/gui/CloseAppointmentsList.fxml", (CloseAppointmentsListController controller) -> {
 			controller.setAppointmentsService(new AppointmentsService());
 			controller.updateTableView();
 			
